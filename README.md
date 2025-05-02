@@ -1,13 +1,4 @@
-# morimaps
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/yourname/morimaps/pulls)
-
-<p align="center">
-  <img src="public/vite.svg" alt="morimaps logo" width="120" />
-</p>
-
-## 🌍 moripa-map-ui-examples
+# 🌍 moripa-map-ui-examples
 
 **moripa-map-ui-examples**は、Minecraftサーバー「もりのパーティ」のワールド地図・マーカー・プレイヤー位置をWeb上で美しく可視化する地図アプリケーションです。React + TypeScript + Leafletを用い、Minecraftの世界を直感的に探索できます。
 
