@@ -1,2 +1,17 @@
 @layer reset, base, tokens, recipes, utilities;
 
+/* .leaflet-popup-content内に.grief-prevention-popupが含まれている場合、親のパディングをリセット（Safariや一部の最新ブラウザのみ対応） */
+.leaflet-popup-content:has(.grief-prevention-popup) {
+  margin: 0 !important;
+  width: auto !important;
+}
+.leaflet-popup-content-wrapper:has(.grief-prevention-popup) {
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+.leaflet-popup:has(.grief-prevention-popup) .leaflet-popup-close-button {
+  display: none !important;
+}
+.leaflet-popup:has(.grief-prevention-popup) .leaflet-popup-tip {
+  display: none !important;
+}

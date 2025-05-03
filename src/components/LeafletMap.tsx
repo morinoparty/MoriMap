@@ -5,8 +5,11 @@ import { useMarkers } from "../hooks/useMarkers";
 import { usePlayers } from "../hooks/usePlayers";
 import { MapMarkers } from "./MapMarkers";
 import { MapPlayers } from "./MapPlayers";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CursorCoords } from "./CursorCoords";
+import { useAtom } from "jotai";
+import { mapStateAtom } from "../context/state";
+import { LayerControlPanel } from "./LayerControlPanel";
 
 const MoriMapStyles = cva({
   base: {
@@ -46,7 +49,7 @@ const MapContainerOptions = {
 
 export const MoriMap = () => {
   const styles = MoriMapStyles();
-  const [baseLayer, setBaseLayer] = useState("minecraft_overworld");
+  const [state, setState] = useAtom(mapStateAtom);
 
   const { data: markers } = useMarkers();
   const { data: players } = usePlayers();
@@ -57,7 +60,13 @@ export const MoriMap = () => {
     useEffect(() => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handler = (e: any) => {
-        setBaseLayer(e.name);
+        setState((prev) => ({
+          ...prev,
+          layer: {
+            ...prev.layer,
+            world: e.name,
+          },
+        }));
 
         if (markers) {
           const spawnIconLayer = markers[e.name].find(
@@ -85,37 +94,42 @@ export const MoriMap = () => {
   }
 
   return (
-    <MapContainer className={styles} {...MapContainerOptions}>
-      <BaseLayerListener />
-      <LayersControl position="topright">
-        <LayersControl.BaseLayer checked name="minecraft_overworld">
-          <TileLayer
-            url="https://mapreserve.morino.party/tiles/minecraft_overworld/3/{x}_{y}.png"
-            {...TileLayerOptions}
+    <div style={{ position: "relative" }}>
+      {/* Layer管理UIを別コンポーネント化 */}
+      <LayerControlPanel />
+      {/* Map本体 */}
+      <MapContainer className={styles} {...MapContainerOptions}>
+        <BaseLayerListener />
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer checked name="minecraft_overworld">
+            <TileLayer
+              url="https://mapreserve.morino.party/tiles/minecraft_overworld/3/{x}_{y}.png"
+              {...TileLayerOptions}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="minecraft_the_nether">
+            <TileLayer
+              url="https://mapreserve.morino.party/tiles/minecraft_the_nether/3/{x}_{y}.png"
+              {...TileLayerOptions}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="minecraft_the_end">
+            <TileLayer
+              url="https://mapreserve.morino.party/tiles/minecraft_the_end/3/{x}_{y}.png"
+              {...TileLayerOptions}
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
+        {markers && <MapMarkers markers={markers[state.layer.world]} />}
+        {players && (
+          <MapPlayers
+            players={players.players.filter(
+              (player) => player.world === state.layer.world
+            )}
           />
-        </LayersControl.BaseLayer>
-        <LayersControl.BaseLayer name="minecraft_the_nether">
-          <TileLayer
-            url="https://mapreserve.morino.party/tiles/minecraft_the_nether/3/{x}_{y}.png"
-            {...TileLayerOptions}
-          />
-        </LayersControl.BaseLayer>
-        <LayersControl.BaseLayer name="minecraft_the_end">
-          <TileLayer
-            url="https://mapreserve.morino.party/tiles/minecraft_the_end/3/{x}_{y}.png"
-            {...TileLayerOptions}
-          />
-        </LayersControl.BaseLayer>
-      </LayersControl>
-      {markers && <MapMarkers markers={markers[baseLayer]} />}
-      {players && (
-        <MapPlayers
-          players={players.players.filter(
-            (player) => player.world === baseLayer
-          )}
-        />
-      )}
-      <CursorCoords />
-    </MapContainer>
+        )}
+        <CursorCoords />
+      </MapContainer>
+    </div>
   );
 };

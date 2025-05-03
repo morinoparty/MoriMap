@@ -1,7 +1,9 @@
+import { Worlds } from "./Worlds";
+
 /** 単一プレイヤーの状態 */
 export interface Player {
   /** どのワールドにいるか（例: "minecraft_overworld"） */
-  world: string;
+  world: Worlds;
   /** 防具ポイント (0–20) */
   armor: number;
   /** プレイヤー名 */
