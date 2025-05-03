@@ -81,7 +81,7 @@ export const MapContextMenu: React.FC = () => {
     if (!contextMenu) return;
     const scale = 1;
     const { x, y } = latLngToPoint(contextMenu.latlng, scale);
-    const url = `${window.location.origin}${window.location.pathname}?x=${Math.round(x)}&z=${Math.round(y)}&world=${state.layer.world}`;
+    const url = `https://morino.party/maps?x=${Math.round(x)}&z=${Math.round(y)}&world=${state.layer.world}`;
     navigator.clipboard.writeText(url);
     setContextMenu(null);
   };
