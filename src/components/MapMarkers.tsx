@@ -23,6 +23,7 @@ import { mapStateAtom } from "../context/state";
 import type { PrimitiveAtom } from "jotai";
 import { parseTrustHtmlToJson } from "../utils/parseTrustHtmlToJson";
 import { GriefPreventionPopup } from "./GriefPreventionPopup";
+import { MapMarkerPopup } from "./MapMarkerPopup";
 type MapState =
   typeof import("../context/state").mapStateAtom extends PrimitiveAtom<infer T>
     ? T
@@ -266,8 +267,8 @@ function renderGriefpreventionMarkers(layer: Layer, state: MapState) {
         <RenderMarkerRectangle
           key={`grief-${layer.id}-${idx}`}
           points={marker.points}
-          color={marker.color}
-          fillColor={marker.fillColor}
+          color={mixHexColors("#539676", marker.fillColor, 0.5)}
+          fillColor={mixHexColors("#A7D6BD", marker.fillColor, 0.6)}
           weight={marker.weight}
         >
           {marker.popup && (
@@ -303,9 +304,11 @@ function renderSpawnIconMarkers(layer: Layer, state: MapState) {
         >
           {marker.tooltip && (
             <Popup>
-              {marker.tooltip
-                .replace(/<center>/g, "")
-                .replace(/<\/center>/g, "")}
+              <MapMarkerPopup>
+                {marker.tooltip
+                  .replace(/<center>/g, "")
+                  .replace(/<\/center>/g, "")}
+              </MapMarkerPopup>
             </Popup>
           )}
         </LeafletMarker>
@@ -342,9 +345,11 @@ function renderBannersMarkers(layer: Layer, state: MapState) {
         >
           {marker.tooltip && (
             <Popup>
-              {marker.tooltip
-                .replace(/<center>/g, "")
-                .replace(/<\/center>/g, "")}
+              <MapMarkerPopup>
+                {marker.tooltip
+                  .replace(/<center>/g, "")
+                  .replace(/<\/center>/g, "")}
+              </MapMarkerPopup>
             </Popup>
           )}
         </LeafletMarker>

@@ -1,15 +1,24 @@
-import { MapContainer, TileLayer, LayersControl, useMap } from "react-leaflet";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  MapContainer,
+  TileLayer,
+  LayersControl,
+  useMap,
+  MapContainerProps,
+  TileLayerProps,
+} from "react-leaflet";
 import { createCRS_MC, pointToLatLng } from "../utils/crs";
 import { cva } from "../../styled-system/css";
 import { useMarkers } from "../hooks/useMarkers";
 import { usePlayers } from "../hooks/usePlayers";
 import { MapMarkers } from "./MapMarkers";
 import { MapPlayers } from "./MapPlayers";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CursorCoords } from "./CursorCoords";
 import { useAtom } from "jotai";
 import { mapStateAtom } from "../context/state";
 import { LayerControlPanel } from "./LayerControlPanel";
+import { MapContextMenu } from "./MapContextMenu";
 
 const MoriMapStyles = cva({
   base: {
@@ -27,7 +36,7 @@ const MoriMapStyles = cva({
   },
 });
 
-const TileLayerOptions = {
+const TileLayerOptions: Omit<TileLayerProps, "url"> = {
   tileSize: 512,
   zoomReverse: false,
   minZoom: 0,
@@ -36,7 +45,7 @@ const TileLayerOptions = {
   minNativeZoom: 2,
   noWrap: true,
 };
-const MapContainerOptions = {
+const MapContainerOptions: MapContainerProps = {
   crs: createCRS_MC(1 / Math.pow(2, 2)),
   center: pointToLatLng({ x: 5100, y: 4102 }, 1),
   zoom: 2,
@@ -45,6 +54,7 @@ const MapContainerOptions = {
   scrollWheelZoom: true,
   zoomControl: false,
   preferCanvas: true,
+  attributionControl: false,
 };
 
 export const MoriMap = () => {
@@ -54,11 +64,43 @@ export const MoriMap = () => {
   const { data: markers } = useMarkers();
   const { data: players } = usePlayers();
 
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [queryParamCentered, setQueryParamCentered] = useState(false);
+
+  // クエリパラメータから x, z, world を取得し、地図を移動させる
+  function QueryParamCentering() {
+    const map = useMap();
+    useEffect(() => {
+      if (queryParamCentered) return;
+      const params = new URLSearchParams(window.location.search);
+      const x = params.get("x");
+      const z = params.get("z");
+      const world = params.get("world");
+      if (x && z && world) {
+        if (world !== state.layer.world) {
+          setState((prev) => ({
+            ...prev,
+            layer: {
+              ...prev.layer,
+              world: world as import("../types/Worlds").Worlds,
+            },
+          }));
+        }
+        const latlng = pointToLatLng({ x: Number(x), y: Number(z) }, 1);
+        map.setView(latlng, 2);
+        setQueryParamCentered(true);
+      } else {
+        setQueryParamCentered(true);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [queryParamCentered]);
+    return null;
+  }
+
   // Child component to use useMap inside MapContainer
   function BaseLayerListener() {
     const map = useMap();
     useEffect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handler = (e: any) => {
         setState((prev) => ({
           ...prev,
@@ -94,12 +136,14 @@ export const MoriMap = () => {
   }
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative" }} ref={mapContainerRef}>
       {/* Layer管理UIを別コンポーネント化 */}
       <LayerControlPanel />
       {/* Map本体 */}
       <MapContainer className={styles} {...MapContainerOptions}>
+        <MapContextMenu />
         <BaseLayerListener />
+        <QueryParamCentering />
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="minecraft_overworld">
             <TileLayer

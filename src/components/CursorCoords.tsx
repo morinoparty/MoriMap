@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMap } from "react-leaflet";
 import { latLngToPoint } from "../utils/crs";
+import { css } from "../../styled-system/css";
 
 export const CursorCoords: React.FC = () => {
   const map = useMap();
@@ -24,19 +25,19 @@ export const CursorCoords: React.FC = () => {
   const { x, y } = latLngToPoint(latLng, scale);
   return (
     <div
-      style={{
+      className={css({
         position: "absolute",
-        right: 16,
-        bottom: 16,
-        background: "rgba(255,255,255,0.85)",
-        color: "#333",
-        padding: "6px 12px",
-        borderRadius: 8,
-        fontSize: 14,
+        left: 0,
+        bottom: 0,
+        background: "#EAF2EF",
+        color: "#3A5A40",
+        padding: "4px 12px",
+        borderRadius: "0 8px 0 0",
+        fontSize: 12,
         zIndex: 9999,
         pointerEvents: "none",
         fontFamily: "monospace",
-      }}
+      })}
     >
       {`x: ${x.toFixed(1)}, z: ${y.toFixed(1)}`}
     </div>
