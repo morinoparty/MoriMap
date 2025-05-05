@@ -152,7 +152,7 @@ export const GriefPreventionPopup: React.FC<{
         </svg>
         <h2 className={classes.headerTitle}>
           {data.type === "claim" && "保護"}
-          {data.type === "Administrator Claim" && "運営の保護"}
+          {data.type === "admin_claim" && "運営の保護"}
         </h2>
       </div>
 

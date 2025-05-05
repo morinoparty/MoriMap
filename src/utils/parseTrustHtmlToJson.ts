@@ -1,64 +1,69 @@
-// JSON変換用ユーティリティ
-// Pattern1: type: 'claim', Pattern2: type: 'Administrator Claim'
-// owner以外のtrust系はArrayに変換
-
 export interface TrustJson {
-  type: string;
-  owner: string;
+  type: "claim" | "admin_claim"; // "claim" または "admin_claim" のいずれか
+  owner: string; // Claim Owner が無い場合は空文字で返す
   permissionTrust: string[];
   trust: string[];
   containerTrust: string[];
   accessTrust: string[];
 }
 
-/**
- * HTMLからTrustJsonへ変換する
- * @param html HTML文字列
- * @returns TrustJson
- */
 export function parseTrustHtmlToJson(html: string): TrustJson {
-  // type自動判定
-  let type = "";
-  if (html.includes("Claim Owner:")) {
-    type = "claim";
-  } else if (html.includes("Administrator Claim")) {
-    type = "Administrator Claim";
-  }
+  // 改行を消して扱いやすく
+  const src = html.replace(/\n/g, "");
 
-  // 各項目の抽出用正規表現
-  const ownerMatch = html.match(
-    /Claim Owner: <span style="font-weight:bold;">(.*?)<\/span>/
-  );
-  const permissionTrustMatch = html.match(
-    /Permission Trust: <span style="font-weight:bold;">(.*?)<\/span>/
-  );
-  const trustMatch = html.match(
-    /Trust: <span style="font-weight:bold;">(.*?)<\/span>/
-  );
-  const containerTrustMatch = html.match(
-    /Container Trust: <span style="font-weight:bold;">(.*?)<\/span>/
-  );
-  const accessTrustMatch = html.match(
-    /Access Trust: <span style="font-weight:bold;">(.*?)<\/span>/
-  );
+  // ----- type と owner -----
+  // 先頭の <span>…</span> を取得（例: "Administrator Claim"）
+  // ただし、HTMLが<span>タグから始まらない場合は空文字
+  const typeMatch = src.match(/^<span[^>]*>(.*?)<\/span>/);
+  const rawType = typeMatch ? typeMatch[1].trim() : "";
 
-  // 配列化ヘルパー
-  const toArray = (str: string | undefined) => {
-    if (!str) return [];
-    return str
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-  };
+  // typeを"claim"または"admin_claim"のいずれかに限定
+  // "Administrator Claim"の場合のみ"admin_claim"、それ以外は"claim"
+  const type = rawType.toLowerCase().includes("administrator")
+    ? "admin_claim"
+    : "claim";
+
+  // Claim Owner: があるパターン
+  const ownerMatch = src.match(/Claim Owner:\s*<span[^>]*>(.*?)<\/span>/i);
+  const owner = ownerMatch ? ownerMatch[1].trim() : "";
+
+  // ----- 各 Trust 系 -----
+  // <br/>ラベル: <span>値</span> の形式でマッチさせる
+  const permissionTrust = extractListExact(src, "<br/>Permission Trust:");
+  const trust = extractListExact(src, "<br/>Trust:");
+  const containerTrust = extractListExact(src, "<br/>Container Trust:");
+  const accessTrust = extractListExact(src, "<br/>Access Trust:");
 
   return {
     type,
-    owner: ownerMatch ? ownerMatch[1] : "",
-    permissionTrust: toArray(
-      permissionTrustMatch ? permissionTrustMatch[1] : ""
-    ),
-    trust: toArray(trustMatch ? trustMatch[1] : ""),
-    containerTrust: toArray(containerTrustMatch ? containerTrustMatch[1] : ""),
-    accessTrust: toArray(accessTrustMatch ? accessTrustMatch[1] : ""),
+    owner,
+    permissionTrust,
+    trust,
+    containerTrust,
+    accessTrust,
   };
+}
+
+/**
+ * 厳密に指定されたラベルとそれに続く<span>の内容をマッチングし、
+ * カンマ区切り → 配列へ変換。空要素は捨てる。
+ */
+function extractListExact(source: string, exactLabel: string): string[] {
+  const re = new RegExp(
+    `${escapeRegExp(exactLabel)}\\s*<span[^>]*>(.*?)<\\/span>`,
+    "i"
+  );
+  const m = source.match(re);
+  if (!m) return [];
+  return m[1]
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/**
+ * 正規表現のメタ文字をエスケープする
+ */
+function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
