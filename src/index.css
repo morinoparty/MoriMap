@@ -8,20 +8,24 @@
 
 /* .leaflet-popup-content内に.grief-prevention-popupが含まれている場合、親のパディングをリセット（Safariや一部の最新ブラウザのみ対応） */
 .leaflet-popup-content:has(.grief-prevention-popup),
-.leaflet-popup-content:has(.text-popup) {
+.leaflet-popup-content:has(.text-popup),
+.leaflet-popup-content:has(.transfer-guide-popup) {
   margin: 0 !important;
   width: auto !important;
 }
 .leaflet-popup-content-wrapper:has(.grief-prevention-popup),
-.leaflet-popup-content-wrapper:has(.text-popup) {
+.leaflet-popup-content-wrapper:has(.text-popup),
+.leaflet-popup-content-wrapper:has(.transfer-guide-popup) {
   padding: 0 !important;
   box-shadow: none !important;
 }
 .leaflet-popup:has(.grief-prevention-popup) .leaflet-popup-close-button,
-.leaflet-popup:has(.text-popup) .leaflet-popup-close-button {
+.leaflet-popup:has(.text-popup) .leaflet-popup-close-button,
+.leaflet-popup:has(.transfer-guide-popup) .leaflet-popup-close-button {
   display: none !important;
 }
 .leaflet-popup:has(.grief-prevention-popup) .leaflet-popup-tip,
-.leaflet-popup:has(.text-popup) .leaflet-popup-tip {
+.leaflet-popup:has(.text-popup) .leaflet-popup-tip,
+.leaflet-popup:has(.transfer-guide-popup) .leaflet-popup-tip {
   display: none !important;
 }

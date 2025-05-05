@@ -24,6 +24,8 @@ import type { PrimitiveAtom } from "jotai";
 import { parseTrustHtmlToJson } from "../utils/parseTrustHtmlToJson";
 import { GriefPreventionPopup } from "./GriefPreventionPopup";
 import { MapMarkerPopup } from "./MapMarkerPopup";
+import { TransferGuidePopup } from "./TransferGuidePopup";
+import { parseRailwayHtmlToJson } from "../utils/parseRailwayHtmlToJson";
 type MapState =
   typeof import("../context/state").mapStateAtom extends PrimitiveAtom<infer T>
     ? T
@@ -251,6 +253,29 @@ function renderRailwayMarkers(layer: Layer, state: MapState) {
           icon={icon}
           interactive={false}
         />
+      );
+    } else if (marker.type === "polyline") {
+      const data = parseRailwayHtmlToJson(marker.popup || "");
+      return (
+        <RenderMarkerPolyline
+          key={`railway-${layer.id}-${idx}`}
+          points={marker.points}
+          color={mixHexColors("#A7D6BD", marker.color, 0.6)}
+          fillColor={marker.fillColor}
+          popup={marker.popup}
+        >
+          {marker.popup && (
+            <Popup>
+              <TransferGuidePopup
+                lineName={data.lineName || "乗換案内"}
+                fromStation={data.fromStation}
+                toStation={data.toStation}
+                travelTime={data.travelTime}
+                direction={data.direction}
+              />
+            </Popup>
+          )}
+        </RenderMarkerPolyline>
       );
     }
     return renderMarker(layer, marker, idx);
