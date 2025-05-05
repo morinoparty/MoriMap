@@ -272,6 +272,7 @@ function renderRailwayMarkers(layer: Layer, state: MapState) {
                 toStation={data.toStation}
                 travelTime={data.travelTime}
                 direction={data.direction}
+                lineColor={marker.color}
               />
             </Popup>
           )}

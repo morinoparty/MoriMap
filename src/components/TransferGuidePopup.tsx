@@ -9,6 +9,7 @@ export const TransferGuidePopupStyles = sva({
     "header",
     "headerIcon",
     "headerTitle",
+    "lineColor",
     "contentContainer",
     "stationRow",
     "stationIconWrapper",
@@ -45,6 +46,8 @@ export const TransferGuidePopupStyles = sva({
     headerIcon: {
       width: "16px",
       height: "16px",
+      minWidth: "16px",
+      minHeight: "16px",
     },
     headerTitle: {
       fontSize: "12px",
@@ -52,6 +55,16 @@ export const TransferGuidePopupStyles = sva({
       color: "#7DBD9D",
       lineHeight: "1.48",
       width: "100%",
+    },
+    lineColor: {
+      width: "12px",
+      height: "12px",
+      minWidth: "12px",
+      minHeight: "12px",
+      borderRadius: "6px",
+      backgroundColor: "#A7D6BD",
+      mr: "2px",
+      border: "1px solid rgba(0, 0, 0, 0.25)",
     },
     contentContainer: {
       display: "flex",
@@ -123,6 +136,7 @@ export const TransferGuidePopupStyles = sva({
 export interface TransferGuidePopupProps {
   className?: string;
   style?: React.CSSProperties;
+  lineColor?: string;
 }
 
 // 乗換案内コンポーネント
@@ -136,6 +150,7 @@ export const TransferGuidePopup: React.FC<
   toStation,
   travelTime,
   direction,
+  lineColor,
 }) => {
   const classes = TransferGuidePopupStyles();
   return (
@@ -160,7 +175,14 @@ export const TransferGuidePopup: React.FC<
           />
         </svg>
 
-        <h2 className={classes.headerTitle}>{lineName}</h2>
+        <div
+          className={cx(classes.lineColor)}
+          style={{
+            backgroundColor: lineColor || "#A7D6BD",
+          }}
+        ></div>
+
+        <h2 className={classes.headerTitle}>{lineName || "乗換案内"}</h2>
       </div>
 
       <div className={classes.contentContainer}>
