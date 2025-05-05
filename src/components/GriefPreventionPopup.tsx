@@ -68,14 +68,16 @@ export const GriefPreventionPopupStyles = sva({
       },
     },
     trustListLabel: {
-      fontWeight: "bold",
       fontSize: "12px",
       color: "#7DBD9D",
       lineHeight: "1",
       display: "inline-block",
       width: "100%",
-      fontFamily: "monospace",
       pb: "2px",
+      fontFamily: "Geist Mono, monospace",
+      fontOpticalSizing: "auto",
+      fontWeight: "600",
+      fontStyle: "normal",
     },
     trustListUl: {
       listStyle: "none",
@@ -84,7 +86,10 @@ export const GriefPreventionPopupStyles = sva({
       fontWeight: "bold",
       fontSize: "14px",
       color: "#488669",
-      lineHeight: "1.2",
+      lineHeight: "1",
+      "& > li": {
+        lineHeight: "1.4",
+      },
     },
     popupArrow: {
       position: "absolute",
