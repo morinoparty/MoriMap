@@ -13,7 +13,7 @@ export const useMarkers = () => {
       const results = await Promise.all(
         worlds.map(async (world) => {
           const res = await fetch(
-            `https://mapreserve.morino.party/tiles/${world}/markers.json`
+            `https://seikatsumain.map.morino.party/tiles/${world}/markers.json`
           );
           if (!res.ok)
             throw new Error(`Network response was not ok for ${world}`);

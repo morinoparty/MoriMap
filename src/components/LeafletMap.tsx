@@ -147,19 +147,19 @@ export const MoriMap = () => {
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="minecraft_overworld">
             <TileLayer
-              url="https://mapreserve.morino.party/tiles/minecraft_overworld/3/{x}_{y}.png"
+              url="https://seikatsumain.map.morino.party/tiles/minecraft_overworld/3/{x}_{y}.png"
               {...TileLayerOptions}
             />
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name="minecraft_the_nether">
             <TileLayer
-              url="https://mapreserve.morino.party/tiles/minecraft_the_nether/3/{x}_{y}.png"
+              url="https://seikatsumain.map.morino.party/tiles/minecraft_the_nether/3/{x}_{y}.png"
               {...TileLayerOptions}
             />
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name="minecraft_the_end">
             <TileLayer
-              url="https://mapreserve.morino.party/tiles/minecraft_the_end/3/{x}_{y}.png"
+              url="https://seikatsumain.map.morino.party/tiles/minecraft_the_end/3/{x}_{y}.png"
               {...TileLayerOptions}
             />
           </LayersControl.BaseLayer>

@@ -6,7 +6,7 @@ export const usePlayers = () => {
     queryKey: ["players"],
     queryFn: async () => {
       const res = await fetch(
-        "https://mapreserve.morino.party/tiles/players.json"
+        "https://seikatsumain.map.morino.party/tiles/players.json"
       );
       if (!res.ok) throw new Error("Network response was not ok");
       return res.json();
