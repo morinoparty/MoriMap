@@ -1,6 +1,6 @@
-# 🌍 moripa-map-ui-examples
+# 🌍 MoriMap
 
-**moripa-map-ui-examples**は、Minecraftサーバー「もりのパーティ」のワールド地図・マーカー・プレイヤー位置をWeb上で美しく可視化する地図アプリケーションです。React + TypeScript + Leafletを用い、Minecraftの世界を直感的に探索できます。
+**MoriMap**は、Minecraftサーバー「もりのパーティ」のワールド地図・マーカー・プレイヤー位置をWeb上で美しく可視化する地図アプリケーションです。React + TypeScript + Leafletを用い、Minecraftの世界を直感的に探索できます。
 
 ---
 
